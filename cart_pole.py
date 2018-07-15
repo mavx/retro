@@ -20,7 +20,7 @@ def run_game(np_params):
         observation, reward, done, info = GAME.step(action)
         total_reward += reward
         if done:
-            print("Episode finished after {} timesteps".format(t))
+            # print("Episode finished after {} timesteps".format(t))
             break
     
     return total_reward
@@ -34,17 +34,48 @@ def train():
             return init_params
 
 def test(params):
+    reward = 0
     if params is not None:
-        print("Playing in the finals!")
+        print("Testing params: {}".format(params))
         reward = run_game(params)
-        print("Final reward:", reward)
+        print("Test reward: {}\n".format(reward))
+
+    return reward
+
+def train_once():
+    print("##### TRAINING ONCE #####")
+    params = train()
+    reward = test(params)
+
+    if reward < 200:
+        print("FAILED! Final test failed at {} with params {}".format(reward, params))
     else:
-        print("Failed, no params:", params)
+        print("PASS. Final test passed at {} with params {}".format(reward, params))
+
+def train_twice():
+    print("##### TRAINING TWICE #####")
+    best_params = None
+    max_reward = 0.0
+    for _ in range(100):
+        params = train()
+        reward = test(params)
+        if reward > max_reward:
+            print("Found better params {} with reward {}".format(params, reward))
+            max_reward = reward
+            best_params = params
+
+    reward = test(best_params)
+    print("Final test 1: Rewarded {} with params {}\n\n".format(reward, best_params))
+
+    reward = test(best_params)
+    print("Final test 2: Rewarded {} with params {}\n\n".format(reward, best_params))
+
+    reward = test(best_params)
+    print("Final test 3: Rewarded {} with params {}\n\n".format(reward, best_params))
 
 def main():
-    params = train()
-    test(params)
-
+    train_once()
+    train_twice()
 
 if __name__ == '__main__':
     main()
