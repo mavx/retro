@@ -48,7 +48,7 @@ def run_game(game_name):
                 print("Reward: {}".format(reward))
                 print("Done: {}".format(reward))
                 print("Info: {}".format(info))
-                time.sleep(0.2)
+                time.sleep(0.1)
 
                 if done:
                     print("Episode {} finished after {} timesteps".format(i_episode, t+1))
