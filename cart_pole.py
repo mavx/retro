@@ -56,28 +56,29 @@ def train_once():
 
 def train_twice():
     print("##### TRAINING TWICE #####")
+    best_params_list = []
     best_params = None
     max_reward = 0.0
     for _ in range(100):
         params = train()
         reward = test(params)
-        if reward > max_reward:
+        if (reward > max_reward) or (reward == 500.0):
             print("Found better params {} with reward {}".format(params, reward))
             max_reward = reward
             best_params = params
+            best_params_list.append(params)
 
-    reward = test(best_params)
-    print("Final test 1: Rewarded {} with params {}\n\n".format(reward, best_params))
-
-    reward = test(best_params)
-    print("Final test 2: Rewarded {} with params {}\n\n".format(reward, best_params))
-
-    reward = test(best_params)
-    print("Final test 3: Rewarded {} with params {}\n\n".format(reward, best_params))
+    for n, best in enumerate(best_params_list):
+        print("\n{} for params[{}]: {}".format(crayons.yellow("Final test"), (n+1), best))
+        for i in range(3):
+            reward = test(best)
+            print("Final test {}: Rewarded {}".format(i, reward))
 
 def main():
+    start = time.time()
     train_once()
     train_twice()
+    print("Elapsed: {:.2f}".format(time.time() - start))
 
 if __name__ == '__main__':
     main()
