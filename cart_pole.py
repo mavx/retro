@@ -2,9 +2,11 @@
 Strategy: 
 """
 
-import gym
 import time
+
 import numpy as np
+import crayons
+import gym
 
 GAME = gym.make('CartPole-v1')
 
@@ -38,7 +40,7 @@ def test(params):
     if params is not None:
         print("Testing params: {}".format(params))
         reward = run_game(params)
-        print("Test reward: {}\n".format(reward))
+        print("Test reward: {}\n".format(crayons.green(str(reward)) if reward > 199 else crayons.red(str(reward))))
 
     return reward
 
