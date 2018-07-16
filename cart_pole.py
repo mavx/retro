@@ -74,10 +74,51 @@ def train_twice():
             reward = test(best)
             print("Final test {}: Rewarded {}".format(i, reward))
 
+def keep_training():
+    print("##### KEEP TRAINING #####")
+    top_params_rewards = []
+    best_param = None
+
+    # First filter: Reward > 200
+    print(crayons.cyan("First filter"))
+    for _ in range(10000):
+        params = train()
+        reward = test(params)
+        if reward > 200:
+            top_params_rewards.append((params, reward))
+
+    # Keep filtering
+    def cut_down(input_list, reward_threshold=200):
+        new_list = []
+        for params, reward in input_list:
+            reward = test(params)
+            if reward > reward_threshold:
+                print("Keeping this ^: {}".format(params))
+                new_list.append((params, reward))
+        return new_list
+    
+    init_threshold = 200
+    while 1:
+        print(crayons.cyan("Filtering top params, current: {}".format(len(top_params_rewards))))
+        # print("Param List ({}): {}".format(len(top_params_rewards), top_params_rewards))
+        top_params_rewards = cut_down(top_params_rewards, init_threshold)
+        if len(top_params_rewards) < 5:
+            print(crayons.yellow("##### THIS SHOULD BE THE FINAL 5 #####"))
+            print("Final list: {}".format(top_params_rewards))
+            for top in top_params_rewards:
+                print(top, test(top[0]))
+            break
+        
+        # Threshold adjustment
+        if (init_threshold < 490):
+            init_threshold += 10
+
+
 def main():
     start = time.time()
     train_once()
-    train_twice()
+    # train_twice()
+    keep_training()
     print("Elapsed: {:.2f}".format(time.time() - start))
 
 if __name__ == '__main__':
